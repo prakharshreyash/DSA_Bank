@@ -1,0 +1,227 @@
+#include<iostream>
+using namespace std;
+class node
+{
+    public:
+    int data;
+    node*next;
+    node*prev;
+
+    node(int val)
+    {
+        data=val;
+        next=NULL;
+        prev=NULL;
+    }
+};
+void insertatfirst(node*&head,int val)
+{
+    node*n=new node(val);
+    n->next=head;
+    if(head!=NULL)
+    {
+        head->prev=n;
+    }
+    head=n;
+}
+void insertatlast(node*&head,int val)
+{
+    if(head==NULL)
+    {
+        insertatfirst(head,val);
+        return;
+    }
+    node*n=new node(val);
+    node*temp=head;
+    while (temp->next!=NULL)
+    {
+        temp=temp->next;
+    }
+    temp->next=n;
+    n->prev=temp;
+}
+void display(node*&head)
+{
+    node*temp=head;
+    while (temp!=NULL)
+    {
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+void deleteatfirst(node*&head)
+{
+    node*todelete=head;
+    head=head->next;
+    head->prev=NULL;
+    delete todelete;
+}
+void deleteatpos(node*&head,int pos)
+{
+    node*temp=head;
+    if(pos==1)
+    {
+        deleteatfirst(head);
+    }
+    int count=1;
+    while (temp!=NULL && count!=pos)
+    {
+        temp=temp->next;
+        count++;
+    }
+    temp->prev->next=temp->next;
+    if(temp->next!=NULL)
+    {
+        temp->next->prev=temp->prev;
+    }
+    delete temp;
+}
+int length(node*&head)
+{
+    node*temp=head;
+    int count=0;
+    while (temp!=NULL)
+    {
+        count++;
+        temp=temp->next;
+    }
+    return count;
+}
+node* appendlastatfirst(node*&head,int k)
+{
+    //taking newtail pointer for making its last node
+    node*newtail;
+    //newhead for start of linked list i.e k nodes before ending
+    node*newhead;
+    //traverse throungh start to end
+    node*tail=head;
+    int len=length(head);
+    //if k is more than len in that case we just traversing the whole list
+    k=k%len;
+    //first edge case if k equal to zero that means either k=0 or k=len;
+    if(k==0)
+    {
+        return head;
+    }
+    //count for tracking the new head or tail
+    int count=1;
+    while (tail->next!=NULL)
+    {
+        //if count is equal to k nodes before the list we found our new tail
+        if(count==len-k)
+        {
+            newtail=tail;
+        }
+    //if count is equal to ahead of k nodes before the list or k+1 nodes before the list we found our new head
+        if(count==len-k+1)
+        {
+            newhead=tail;
+        }
+        tail=tail->next;
+        count++;
+    }
+    //cout<<endl;
+    //its a edge case of bringing last item to first
+    //in previous loop we couldn't travese till count=len or len-k+1 that's why we assinging newhead here
+    if(count==len-k+1)
+    {
+        newhead=tail;
+    }
+    //breaking the contact after last node i.e new tail 
+    newtail->next=NULL;
+    //adding new connection of last node with first one
+    tail->next=head;
+    return newhead;
+}
+void intersect(node*&head1,node*&head2,int pos)
+{
+    node*temp1=head1;
+    pos--;
+    while (pos--)
+    {
+        temp1=temp1->next;
+    }
+    node*temp2=head2;
+    while (temp2->next!=NULL)
+    {
+        temp2=temp2->next;
+    }
+    temp2->next=temp1;
+}
+int cought(node*&head1,node*&head2)
+{
+    node*temp1;
+    node*temp2;
+    int len1=length(head1);
+    int len2=length(head2);
+    int total=0;
+    int count=1;
+    if(len1>len2)
+    {
+        total=len1-len2;
+        temp1=head1;
+        temp2=head2;
+    }
+    else if (len2>=len1)
+    {
+        total=len2-len1;
+        temp1=head2;
+        temp2=head1;
+    }
+    //cout<<"the lenght u=is "<<len1<<len2<<total<<endl;
+    while (total!=0)
+    {
+        //cout<<total;
+        temp1=temp1->next;
+        if(temp1==NULL)
+        {
+            cout<<"no intersection"<<endl;
+            return -1;
+        }
+        total--;
+    }
+    //cout<<temp1->data;
+    while (temp1!=temp2)
+    {
+        if(temp1==temp2)
+        {
+            return temp1->data;
+        }
+        temp1=temp1->next;
+        temp2=temp2->next;
+    }
+    //cout<<"position ="<<count+total<<endl;
+    return -1;
+}
+int main()
+{
+    node*head=NULL;
+    insertatfirst(head,1);
+    insertatlast(head,2);
+    insertatlast(head,3);
+    insertatlast(head,4);
+    //cout<<length(head)<<endl;
+    //display(head);
+    //deleteatfirst(head);
+    //display(head);
+    //deleteatpos(head,3);
+    //display(head);
+    //cout<<length(head)<<endl;
+    //node*newhead=appendlastatfirst(head,2);
+    //display(newhead);
+    //insertatfirst(newhead,1);
+    //insertatlast(newhead,4);
+    //insertatlast(newhead,5);
+    //insertatlast(newhead,6);
+    node*head2=NULL;
+    insertatfirst(head,5);
+    insertatlast(head2,7);
+    insertatlast(head2,6);
+    insertatlast(head2,5);
+    //intersect(head,head2,1);
+    display(head);
+    display(head2);
+    cout<<cought(head,head2);
+    return 0;
+}

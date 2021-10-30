@@ -1,0 +1,422 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 100
+struct node
+{
+    struct node *left_c ;
+    struct node *right_c ;
+    int id ;
+    char name[20] ;
+    int salary ;
+};
+struct node2
+{
+    struct node *left_c ;
+    struct node *right_c ;
+    int id ;
+    char city[20] ;
+    char department[20] ;
+};
+
+struct stack
+{
+    struct node *arr[100] ;
+    int top ;
+};
+void push(struct stack *s,struct node *a)
+{
+    if((*s).top==100-1)
+    {
+        printf("overflow\n") ;
+        return ;
+    }
+    (*s).top++ ;
+    (*s).arr[((*s).top)]=a ;
+}
+struct node* pop(struct stack *s)
+{
+    if((*s).top==-1)
+    {
+        printf("underflow\n") ;
+        return NULL  ;
+    }
+    struct node *z=(*s).arr[(*s).top] ;
+    (*s).top-- ;
+    return z ;
+}
+void construct(struct node **root)
+{
+    struct node *n ;
+    n=(struct node *)malloc(sizeof(struct node)) ;
+    n->left_c=NULL ;
+    n->right_c=NULL ;
+    char nm[20] ;
+    int id1,sa ;
+    printf("Enter employee name,id and salary\n") ;
+    scanf(" %s",&nm) ;
+    scanf("%d",&id1) ;
+    scanf("%d",&sa) ;
+    strcpy(n->name,nm) ;
+    n->id=id1 ;
+    n->salary=sa;
+
+    if((*root)==NULL)
+    {
+        *root=n ;
+    }
+    else
+    {
+        //get the parent node and then add
+        struct node *t=*root,*t2=t ;
+        while(t!=NULL)
+        {
+            t2=t ;
+            if(t->id>id1)
+            {
+                t=t->left_c ;
+            }
+            else
+            {
+                t=t->right_c ;
+            }
+
+        }
+        if(id1<t2->id)
+        {
+            t2->left_c=n ;
+        }
+        else
+            t2->right_c=n ;
+
+
+    }
+}
+void construct2(struct node2 **root)
+{
+    struct node2 *n ;
+    n=(struct node2 *)malloc(sizeof(struct node2)) ;
+    n->left_c=NULL ;
+    n->right_c=NULL ;
+    char cy[20],dp[20] ;
+    int id1;
+    printf("Enter employee id,city and department\n") ;
+    scanf("%d %s %s",&id1,cy,dp) ;
+    n->id=id1 ;
+    strcpy(n->city,cy) ;
+    strcpy(n->department,dp) ;
+    if((*root)==NULL)
+    {
+        *root=n ;
+    }
+    else
+    {
+        //get the parent node and then add
+        struct node2 *t=*root,*t2=t ;
+        while(t!=NULL)
+        {
+            t2=t ;
+            if(t->id>id1)
+            {
+                t=t->left_c ;
+            }
+            else
+            {
+                t=t->right_c ;
+            }
+
+        }
+        if(id1<t2->id)
+        {
+            t2->left_c=n ;
+        }
+        else
+            t2->right_c=n ;
+
+    }
+}
+void inorder(struct node *root)
+{
+
+    if(root!=NULL)
+    {
+        inorder(root->left_c) ;
+//        printf("%d ",root->data)    ;
+        inorder(root->right_c) ;
+    }
+
+
+
+}
+void inorder2(struct node *root)
+{
+
+    if(root!=NULL)
+    {
+        inorder2(root->left_c) ;
+        printf("Id= %d\n",root->id) ;
+        printf("Name= %s\n",root->name) ;
+        printf("Salary= %d\n",root->salary) ;
+        inorder2(root->right_c) ;
+    }
+
+
+
+}
+void inorder3(struct node2 *root)
+{
+
+    if(root!=NULL)
+    {
+        inorder3(root->left_c) ;
+        printf("Id= %d\n",root->id) ;
+        printf("department= %s\n",root->department) ;
+        printf("city= %s\n",root->city) ;
+        inorder3(root->right_c) ;
+    }
+
+
+
+}
+void display_city(struct node2 *root)
+{
+
+    if(root!=NULL)
+    {
+        display_city(root->left_c) ;
+        char str[20]="bhubaneswar" ;
+        if(strcmp(str,root->city )==0)
+        {
+            printf("Id= %d\n",root->id) ;
+            printf("Department= %s\n",root->department) ;
+            printf("City= %s\n",root->city) ;
+        }
+        display_city(root->right_c) ;
+    }
+
+
+
+}
+int id_checker(struct node *root,struct stack *s,int id1)
+{
+    struct node *t=root ;
+    int mx=0 ;
+    while(t!=NULL)
+    {
+        if(t->id==id1)
+            return 1 ;
+        push(s,t) ;
+        t=t->left_c ;
+
+    }
+    while(s->top!=-1)
+    {
+
+        t=pop(s) ;
+        if(t->right_c!=NULL)
+        {
+            t=t->right_c ;
+            while(t!=NULL)
+            {
+                if(t->id==id1)
+                    return 1 ;
+                push(s,t) ;
+                t=t->left_c ;
+
+            }
+
+        }
+        t=NULL ;
+
+
+    }
+    return 0 ;
+}
+
+int ms(struct node *root,struct stack *s)
+{
+    struct node *t=root ;
+    int mx=0 ;
+    while(t!=NULL)
+    {
+        if(t->salary>mx)
+            mx=t->salary ;
+        push(s,t) ;
+        t=t->left_c ;
+
+    }
+    while(s->top!=-1)
+    {
+
+        t=pop(s) ;
+        if(t->right_c!=NULL)
+        {
+            t=t->right_c ;
+            while(t!=NULL)
+            {
+                if(t->salary>mx)
+                    mx=t->salary ;
+                push(s,t) ;
+                t=t->left_c ;
+
+            }
+
+        }
+        t=NULL ;
+
+
+    }
+    return mx ;
+}
+
+int ms2(struct node *root,struct stack *s,int sal)
+{
+    struct node *t=root ;
+    while(t!=NULL)
+    {
+        if(t->salary==sal)
+            return t->id ;
+        push(s,t) ;
+        t=t->left_c ;
+
+    }
+    while(s->top!=-1)
+    {
+
+        t=pop(s) ;
+        if(t->right_c!=NULL)
+        {
+            t=t->right_c ;
+            while(t!=NULL)
+            {
+                if(t->salary==sal)
+                    return t->id ;
+                push(s,t) ;
+                t=t->left_c ;
+
+            }
+
+        }
+        t=NULL ;
+
+
+    }
+
+}
+
+
+void ms3(struct node2 *root,int id1)
+{
+
+    if(root!=NULL)
+    {
+        ms3(root->left_c,id1) ;
+        if(root->id==id1)
+        {
+            printf("Id= %d\n",root->id) ;
+            printf("department= %s\n",root->department) ;
+        }
+        ms3(root->right_c,id1) ;
+    }
+
+
+
+}
+
+int main(void)
+{
+    struct node *root ;
+    root=NULL ;
+    struct node2 *root2 ;
+    root2=NULL ;
+    struct stack *s ;
+    s=(struct stack*)malloc(sizeof(struct stack)) ;
+    s->top=-1 ;
+    int z;
+    while(1)
+    {
+
+        printf("1 to add node\n2 to display employee belonging to bhubaneswar\n3to display sorted\n4 for adding without duplicate entry\n5 for highest salary\n0 to quit\n") ;
+        scanf("%d",&z) ;
+        switch(z)
+        {
+        case 1:
+            {
+                int h ;
+                int x,d,s ;
+                printf("1 to add to first tree\n 2 to add to second tree\n") ;
+                scanf("%d",&h) ;
+                if(h==1)
+                {
+
+
+
+                    construct(&root) ;
+                }
+                else
+                {
+
+
+                    construct2(&root2) ;
+                }
+                break;
+
+
+            }
+        case 2:
+            {
+                display_city(root2) ;
+                break ;
+            }
+        case 3:
+            {
+                inorder3(root2) ;
+                inorder2(root) ;
+                printf("Second bst\n\n") ;
+
+                break ;
+            }
+        case 4:
+            {
+
+                while(1)
+                {
+                    printf("Enter id\n") ;
+                    int id1 ;
+                    scanf("%d",&id1) ;
+                    s->top=-1 ;
+                    if(id_checker(root,s,id1)) //duplicate
+                    {
+                        printf("duplicate entry\n") ;
+                        break ;
+                    }
+                    else
+                    {
+                        construct(&root) ;
+                        construct2(&root2) ;
+                    }
+
+                }
+                break ;
+
+            }
+
+        case 5:
+            {
+                //get id of highest salary from 1
+                int mx=ms(root,s) ;
+                printf("Maximum is %d\n",mx) ;
+                s->top=-1 ;
+                int id ;
+                id= ms2(root,s,mx) ;
+//                printf("Maximum  id is %d\n",id) ;
+                ms3(root2,id) ;
+            }
+
+        }
+        if(z==0)
+            break ;
+    }
+
+
+}

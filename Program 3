@@ -1,0 +1,107 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node
+{
+     int data;
+     struct node* next;
+};
+
+void createlist(struct node **st, int n)
+{
+    struct node * new= (struct node *)malloc(n*sizeof(struct node));
+    struct node * temp= (struct node *)malloc(n*sizeof(struct node));
+    new->data=n;
+    new->next=NULL;
+
+    if((*st)==NULL)
+        (*st)=new;
+
+    else
+     {
+        temp=(*st);
+        while(temp->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        temp->next=new;
+    }
+}
+
+void displaylist(struct node **nd)
+{
+    struct node*temp= *nd;
+    printf("Data of nodes of LL: ");
+    while(temp!=NULL)
+    {
+        printf("%d ",temp->data);
+        temp=temp->next;
+    }
+    printf("\n");
+}
+
+void delete_duplicate(struct node **a)
+{
+    struct node *prev, *ptr1, *ptr2;
+    for(ptr1=*a;ptr1!=NULL;ptr1=ptr1->next)
+    {
+        prev=ptr1;
+        ptr2=ptr1->next;
+        while(ptr2!=NULL)
+        {
+            if (ptr1->data != ptr2->data)
+            {
+                prev=ptr2;
+                ptr2=ptr2->next;
+            }
+            else
+            {
+                struct node *temp= ptr2;
+                prev->next=ptr2->next;
+                ptr2=ptr2->next;
+                free(temp);
+            }
+        }
+    }
+}
+
+
+int main()
+{
+    struct node *start=NULL;
+    int data,pos,code,ctr=1;
+
+    while(ctr)
+    {
+        printf("\n 1. Create a LL\n 2. Display the original LL\n 3. Display the LL without duplicates\n 4. Exit\nEnter code: ");
+        scanf("%d",&code);
+        switch(code)
+        {
+            case 1:
+            {
+                int n;
+                printf("Enter the no. of data: ");
+                scanf("%d",&n);
+                createlist(&start,n);
+                break;
+            }
+            case 2:
+            {
+                displaylist(&start);
+                break;
+            }
+            case 3:
+            {
+                delete_duplicate(&start);
+                displaylist(&start);
+                break;
+            }
+            case 4:
+            {
+                exit(0);
+                break;
+            }
+            default: printf("\nInvalid choice\n"); ctr=0;
+        }
+    }
+}

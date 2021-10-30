@@ -1,0 +1,78 @@
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+#define max 100
+
+struct stack
+{
+    int arr[max];
+    int top;
+};
+
+void push(struct stack *s, int a)
+{
+    if((*s).top==max-1)
+    {
+        printf("\nOverflow");
+    }
+    else
+    {
+        (*s).arr[++((*s).top)]=a;
+    }
+}
+
+int pop(struct stack *s)
+{
+    /* if((*s).top==-1)
+    {
+        printf("\nUnderflow");
+        return -1;
+    } */
+    int n= (*s).arr[((*s).top)--];
+    return n;
+
+}
+
+int eval_postfix(struct stack (*s), char *str)
+{
+    for(int i=0;str[i]!='\0';i++)
+    {
+            if (str[i]==' ')
+            {
+                continue;
+            }
+            else if (isdigit(str[i]))
+            {
+                int n=0;
+                while(isdigit(str[i]))
+                {
+                    n= n*10+ (int)(str[i]-'0');
+                    i++;
+                }
+                i--;
+                push(s,n);
+            }
+            else
+            {
+                int t1=pop(s);
+                int t2=pop(s);
+                switch(str[i])
+                {
+                    case '+' : push(s,t2+t1); break;
+                    case '-' : push(s,t2-t1); break;
+                    case '*' : push(s,t2*t1); break;
+                    case '/' : push(s,t2/t1); break;
+                }
+            }
+
+    }
+    return pop(s);
+}
+int main()
+{
+    struct stack s;
+    s.top=-1;
+    char a[]=  "12 10 7 - * 3 9 6 - + -";
+    printf("\nThe result of postfix exp is %d",eval_postfix(&s,a));
+    return 0;
+}

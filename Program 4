@@ -1,0 +1,85 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define max 100
+
+struct node
+{
+    int data;
+    struct node *lptr;
+    struct node *rptr;
+};
+
+void insert(struct node **root, int n)
+{
+    struct node *parent, *ptr;
+    struct node *new= (struct node*)malloc(sizeof(struct node));
+    new->data=n;
+    new->lptr= NULL;
+    new->rptr= NULL;
+
+    if((*root)== NULL)
+        (*root)= new;
+    else
+    {
+
+        ptr= *root;
+        parent= NULL;
+        while(ptr!=NULL)
+        {
+            parent= ptr;
+            if(n < ptr->data)
+                ptr= ptr->lptr;
+            else
+                ptr= ptr->rptr;
+        }
+        if(n < parent->data)
+            parent->lptr= new;
+        else
+            parent->rptr= new;
+    }
+}
+
+int height_node(struct node *root)
+{
+    if(root==NULL)
+        return 0;
+    int ht_lst= height_node(root->lptr);
+    int ht_rst= height_node(root->rptr);
+    if(ht_lst > ht_rst)
+        return (ht_lst+1);
+    else
+        return (ht_rst+1);
+}
+
+int main()
+{
+    struct node *root= NULL;
+    int code;
+    while(1)
+    {
+        printf("\n1. Add an element(node)\n2. Height of the tree\n3. Exit\n Enter choice: ");
+        scanf("%d",&code);
+        switch(code)
+        {
+            case 1:
+            {
+                int n;
+                printf("Enter element(node) to be inserted: ");
+                scanf("%d",&n);
+                insert(&root, n);
+                break;
+            }
+            case 2:
+            {
+                printf("\nHeight of a tree: %d",height_node(root)-1); break;
+            }
+            case 3:
+            {
+                exit(0); break;
+            }
+
+            default: printf("\nInvalid choice");
+
+        }
+    }
+}

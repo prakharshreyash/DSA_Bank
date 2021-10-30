@@ -1,0 +1,147 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node
+{
+    int coff;
+    int exp1;
+    int exp2;
+    struct node *next;
+};
+void create_list(struct node **s, int c, int e1, int e2)
+{
+    struct node *temp;
+    struct node *new=(struct node*)malloc(sizeof(struct node));
+    if(new==NULL)
+    {
+        printf("Out of Memory Space\n");
+        exit(0);
+    }
+    new->coff=c;
+    new->exp1=e1;
+    new->exp2=e2;
+    new->next=NULL;
+
+    if((*s)==NULL)
+        (*s)=new;
+    else
+    {
+        temp=(*s);
+        while(temp->next!=NULL)
+        temp=temp->next;
+        temp->next=new;
+    }
+}
+void display(struct node **p)
+{
+    if(p==NULL)
+    {
+        printf("\n list is empty\n");
+        return;
+    }
+    else
+    {
+        struct node *temp=*p;
+        printf("\nElements of list are:\n");
+        while(temp!=NULL)
+        {
+            if(temp->coff>0)
+                printf(" + %d(x^%d)(y^%d)",temp->coff,temp->exp1,temp->exp2);
+            else
+                printf(" %d(x^%d)(y^%d)",temp->coff,temp->exp1,temp->exp2);
+            temp=temp->next;
+        }
+        printf("\n");
+    }
+}
+void addition(struct node **a,struct node **b)
+{
+    struct node *t1;
+    t1=*a;
+    while(t1->next!=NULL)
+    t1=t1->next;
+    t1->next=*b;
+    struct node *st1,*st2,*prev;
+    for(st1=*a;st1!=NULL;st1=st1->next)
+    {
+        prev=st1;
+        st2=st1->next;
+        while(st2!=NULL)
+        {
+            if((st1->exp1!=st2->exp1) || (st1->exp2!=st2->exp2))
+            {
+                prev=st2;
+                st2=st2->next;
+            }
+            else if((st1->exp1==st2->exp1) && (st1->exp2==st2->exp2))
+            {
+                st1->coff+=st2->coff;
+                prev->next=st2->next;
+                st2=st2->next;
+            }
+        }
+    }
+}
+void main()
+{
+    struct node *poly1=NULL,*poly2=NULL;
+    int c;
+    while(1)
+    {
+        printf("\n1. Enter the 1st polynomial\n");
+        printf("2. Display the 1st polynomial\n");
+        printf("3. Enter the 2nd polynomial\n");
+        printf("4. Display the 2nd polynomial\n");
+        printf("5. Display the sum of polynomials\n");
+        printf("6. Quit\n");
+        printf("Enter choice: ");
+        scanf("%d",&c);
+        switch(c)
+        {
+            case 1:
+            {
+                int co,ex1,ex2;
+                printf("\nFor 1st polynomial\n");
+                printf("enter the coefficient: ");
+                scanf("%d",&co);
+                printf("enter the 1st exponent: ");
+                scanf("%d",&ex1);
+                printf("enter the 2nd exponent: ");
+                scanf("%d",&ex2);
+                create_list(&poly1,co,ex1,ex2);
+
+                break;
+            }
+            case 2:
+            {
+                display(&poly1);
+                break;
+            }
+            case 3:
+            {
+                int co,ex1,ex2;
+                printf("\nFor 2nd polynomial\n");
+                printf("enter the coefficient: ");
+                scanf("%d",&co);
+                printf("enter the 1st exponent: ");
+                scanf("%d",&ex1);
+                printf("enter the 2nd exponent: ");
+                scanf("%d",&ex2);
+                create_list(&poly2,co,ex1,ex2);
+            }
+            case 4:
+            {
+                display(&poly2);
+                break;
+            }
+            case 5:
+            {
+                addition(&poly1,&poly2);
+                display(&poly1);
+                break;
+            }
+            case 6: exit(0);
+            default: printf("invalid input");
+        }
+    }
+}
